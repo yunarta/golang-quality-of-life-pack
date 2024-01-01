@@ -46,6 +46,19 @@ func Contains[T comparable](source []T, check T) bool {
 	return false
 }
 
+// ContainsFunc is a helper function that checks whether a specific element ('check') exists in the provided slice ('source')
+func ContainsFunc[T comparable](source []T, check func(e T) bool) bool {
+	// Loop over each item in the slice
+	for _, v := range source {
+		// If the current item matches the item we're checking for, return 'true'
+		if check(v) {
+			return true
+		}
+	}
+	// If we've looped over all the items and haven't found a match, return 'false'
+	return false
+}
+
 // EqualsIgnoreOrder compares two slices and returns 'true' if they contain the same elements, regardless of their order
 func EqualsIgnoreOrder[T comparable](source, other []T) bool {
 	// If the lengths of both slices aren't equal, they can't be the same
@@ -117,7 +130,7 @@ func Intersect[T comparable](source, other []T) []T {
 
 // Map function applies a provided function 'mapper' on each element of a given slice.
 // It's a generalized function to perform any operation 'mapper' on all elements
-func Map[K any](collection []K, mapper func(k K) K) []K {
+func Map[K any](collection []K, mapper func(e K) K) []K {
 	slice := make([]K, 0)
 
 	// For each element in 'collection', apply the 'mapper' function and store the result in 'slice'
@@ -145,16 +158,28 @@ func MapNotNull[K any](collection []K, mapper func(k K) *K) []K {
 	return slice
 }
 
-// GetValuesOfMap function fetches all values from the supplied map and returns them as a slice.
-func GetValuesOfMap[K comparable, V any](source map[K]V) []V {
+func SpliceMapToKeyValue[K comparable, V any](source map[K]V) ([]K, []V) {
+	keys := make([]K, 0)
 	values := make([]V, 0)
 
 	// Loop over the source map and collect its values
-	for _, value := range source {
+	for key, value := range source {
+		keys = append(keys, key)
 		values = append(values, value)
 	}
 
-	// Return the slice of values
+	return keys, values
+}
+
+// GetKeysOfMap function fetches all keys from the supplied map and returns them as a slice.
+func GetKeysOfMap[K comparable, V any](source map[K]V) []K {
+	keys, _ := SpliceMapToKeyValue(source)
+	return keys
+}
+
+// GetValuesOfMap function fetches all values from the supplied map and returns them as a slice.
+func GetValuesOfMap[K comparable, V any](source map[K]V) []V {
+	_, values := SpliceMapToKeyValue(source)
 	return values
 }
 
