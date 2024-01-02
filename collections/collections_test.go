@@ -151,6 +151,50 @@ func TestContains(t *testing.T) {
 
 }
 
+func TestContainsFunc(t *testing.T) {
+	t.Run("test with integers function", func(t *testing.T) {
+		a := []int{1, 2, 3, 4, 5}
+		f := func(i int) bool { return i%2 == 0 }
+
+		assert.True(t, ContainsFunc(a, f))
+	})
+
+	t.Run("test with function that does not have elements satisfying the condition", func(t *testing.T) {
+		a := []int{1, 3, 5, 7, 9}
+		f := func(i int) bool { return i%2 == 0 }
+
+		assert.False(t, ContainsFunc(a, f))
+	})
+
+	t.Run("test with empty slice", func(t *testing.T) {
+		emptySlice := []int{}
+		f := func(i int) bool { return i%2 == 0 }
+
+		assert.False(t, ContainsFunc(emptySlice, f))
+	})
+
+	t.Run("test with string func", func(t *testing.T) {
+		a := []string{"apple", "banana", "cherry"}
+		f := func(s string) bool { return s == "banana" }
+
+		assert.True(t, ContainsFunc(a, f))
+	})
+
+	t.Run("test with string function that does not have elements satisfying the condition", func(t *testing.T) {
+		a := []string{"apple", "banana", "cherry"}
+		f := func(s string) bool { return s == "grape" }
+
+		assert.False(t, ContainsFunc(a, f))
+	})
+
+	t.Run("test with nil slice", func(t *testing.T) {
+		var a []int
+		f := func(i int) bool { return i%2 == 0 }
+
+		assert.False(t, ContainsFunc(a, f))
+	})
+}
+
 func TestEqualsIgnoreOrder(t *testing.T) {
 	t.Run("test with integers", func(t *testing.T) {
 		a := []int{1, 2, 3, 4, 5}
@@ -313,6 +357,16 @@ func TestMapNotNull(t *testing.T) {
 			}
 			return &k
 		})
+
+		assert.ElementsMatch(t, actual, expected)
+	})
+}
+
+func TestGetKeysOfMap(t *testing.T) {
+	t.Run("test with string to int map", func(t *testing.T) {
+		a := map[string]int{"one": 1, "two": 2, "three": 3}
+		expected := []string{"one", "two", "three"}
+		actual := GetKeysOfMap(a)
 
 		assert.ElementsMatch(t, actual, expected)
 	})
