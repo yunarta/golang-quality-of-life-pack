@@ -158,6 +158,7 @@ func MapNotNull[K any](collection []K, mapper func(k K) *K) []K {
 	return slice
 }
 
+// SpliceMapToKeyValue function converts a map into two slices - one containing the keys and another containing the values.
 func SpliceMapToKeyValue[K comparable, V any](source map[K]V) ([]K, []V) {
 	keys := make([]K, 0)
 	values := make([]V, 0)
